@@ -1,0 +1,47 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      routes:
+        - id: user-service
+          uri: ${USER_SERVICE_URL:http://user-service:8081}
+          predicates:
+            - Path=/api/users/**
+        - id: product-service
+          uri: ${PRODUCT_SERVICE_URL:http://product-service:8082}
+          predicates:
+            - Path=/api/products/**
+        - id: order-service
+          uri: ${ORDER_SERVICE_URL:http://order-service:8083}
+          predicates:
+            - Path=/api/orders/**
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE_URL:http://notification-service:8085}
+          predicates:
+            - Path=/api/notifications/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    health:
+      show-details: always
+
+services:
+  urls:
+    user-service: ${USER_SERVICE_URL:http://user-service:8081}
+    product-service: ${PRODUCT_SERVICE_URL:http://product-service:8082}
+    order-service: ${ORDER_SERVICE_URL:http://order-service:8083}
+    notification-service: ${NOTIFICATION_SERVICE_URL:http://notification-service:8085}
